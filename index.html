@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🏀 Predictions — Team Vote</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:-apple-system,'SF Pro Display','Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(160deg,#0a0e17,#131a2a 60%,#1a2332);
+    color:#e8eaf0; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:0 14px 40px; overflow-x:hidden;
+  }
+  .wrap { width:100%; max-width:480px; }
+  header { text-align:center; padding:26px 0 4px; }
+  h1 { font-size:26px; font-weight:900; letter-spacing:-.5px; text-transform:uppercase;
+       background:linear-gradient(90deg,#f5a623,#ffd24a,#f5a623); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  header p { color:#8b93a7; font-size:13px; margin-top:4px; }
+  .progress { height:4px; background:#1c2739; border-radius:99px; margin:18px 0 6px; overflow:hidden; }
+  .progress > div { height:100%; background:linear-gradient(90deg,#f5a623,#ffd24a); border-radius:99px; transition:width .3s; }
+  .count { text-align:center; color:#5a637a; font-size:11px; letter-spacing:1px; margin-bottom:10px; }
+
+  /* ===== CARD (Tinder-Style) ===== */
+  #cardStack { position:relative; height:430px; margin-top:8px; }
+  .card {
+    position:absolute; inset:0; background:linear-gradient(180deg,#1c2739,#141c2b);
+    border:1px solid #2a3550; border-radius:22px; padding:22px 18px;
+    display:flex; flex-direction:column; box-shadow:0 18px 50px #00000066;
+    transition:transform .45s cubic-bezier(.2,.7,.3,1),opacity .45s;
+    will-change:transform;
+  }
+  .card.behind { transform:scale(.93) translateY(14px); opacity:.4; pointer-events:none; }
+  .card.gone-left { transform:translateX(-130%) rotate(-14deg)!important; opacity:0; }
+  .card.gone-right { transform:translateX(130%) rotate(14deg)!important; opacity:0; }
+  .card .emoji { font-size:34px; }
+  .card h2 { font-size:20px; font-weight:800; margin:8px 0 2px; }
+  .card .sub { color:#8b93a7; font-size:12px; margin-bottom:14px; }
+  .picks { flex:1; display:flex; flex-direction:column; gap:9px; justify-content:center; }
+  .pick { display:grid; grid-template-columns:64px 1fr; gap:10px; align-items:center; }
+  .pick label { font-weight:900; font-size:13px; text-align:right; }
+  .pick label.p1 { color:#f5a623; } .pick label.p2 { color:#cfd6e4; } .pick label.p3 { color:#c98d5a; }
+  .pick label.p4 { color:#8b93a7; } .pick label.p5 { color:#6a7288; }
+  select {
+    width:100%; background:#0f1626; color:#e8eaf0; border:1px solid #2a3550;
+    border-radius:10px; padding:11px 10px; font-size:15px; font-weight:600; appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23f5a623'/></svg>");
+    background-repeat:no-repeat; background-position:right 12px center; font-family:inherit;
+  }
+  select:focus { outline:none; border-color:#f5a623; }
+  .card .hint { text-align:center; color:#5a637a; font-size:11px; margin-top:8px; }
+
+  /* ===== BUTTONS ===== */
+  .btnrow { display:flex; gap:12px; justify-content:center; margin-top:16px; }
+  .btn {
+    border:none; border-radius:16px; font-weight:800; font-size:15px; cursor:pointer;
+    padding:14px 22px; transition:transform .1s; font-family:inherit;
+  }
+  .btn:active { transform:scale(.94); }
+  .btn.skip { background:#1c2739; color:#8b93a7; border:1px solid #2a3550; font-size:13px; padding:14px 16px; }
+  .btn.next { background:linear-gradient(90deg,#f5a623,#ffd24a); color:#131a2a; flex:1; max-width:240px; }
+
+  /* ===== RESULT ===== */
+  #result { display:none; padding-top:10px; }
+  #result h2 { text-align:center; font-size:22px; margin:14px 0 4px; }
+  #result .sub { text-align:center; color:#8b93a7; font-size:13px; margin-bottom:16px; }
+  .rescard { background:#131b2a; border:1px solid #232e45; border-radius:14px; padding:12px 14px; margin:8px 0; }
+  .rescard .cat { font-size:12px; color:#8b93a7; }
+  .rescard .val { font-weight:800; font-size:15px; margin-top:2px; }
+  .sharebox { background:#131b2a; border:1px dashed #f5a62366; border-radius:14px; padding:16px; margin:16px 0; text-align:center; }
+  .sharebox p { font-size:13px; color:#8b93a7; margin-bottom:12px; line-height:1.5; }
+  .linkbox { display:flex; gap:8px; }
+  .linkbox input { flex:1; background:#0f1626; border:1px solid #2a3550; border-radius:10px; color:#ffd24a; padding:10px; font-size:12px; }
+  .linkbox button { background:#f5a623; color:#131a2a; border:none; border-radius:10px; padding:0 16px; font-weight:800; cursor:pointer; font-family:inherit; }
+  #nameBox { display:flex; gap:8px; margin:6px 0 14px; }
+  #nameBox input { flex:1; background:#0f1626; border:1px solid #2a3550; border-radius:12px; color:#e8eaf0; padding:13px 14px; font-size:15px; font-family:inherit; }
+  .restart { display:block; margin:18px auto 0; background:none; border:1px solid #2a3550; color:#8b93a7; border-radius:12px; padding:10px 20px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#f5a623; color:#131a2a; font-weight:800; padding:12px 22px; border-radius:12px; transition:transform .3s; z-index:99; font-size:14px; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🏀 Predictions</h1>
+  <p id="subtitle">Wählt eure Top 5 pro Kategorie</p>
+</header>
+<div class="progress"><div id="progFill" style="width:0%"></div></div>
+<div class="count" id="counter"></div>
+
+<div id="cardStack"></div>
+<div class="btnrow">
+  <button class="btn skip" id="skipBtn">⏭️ Kippen</button>
+  <button class="btn next" id="nextBtn">Next ➜</button>
+</div>
+
+<div id="result">
+  <h2>🎉 Fertig!</h2>
+  <div class="sub">So habt ihr gewählt — schickt den Link an Marvin:</div>
+  <div id="nameWrap">
+    <div id="nameBox"><input id="voterName" placeholder="Euer Name..." maxlength="20"></div>
+  </div>
+  <div class="sharebox">
+    <p>🔗 <b>Teil-Link</b> — enthält eure Votes:<br>in WhatsApp/Telegram an Marvin schicken.</p>
+    <div class="linkbox"><input id="shareLink" readonly><button id="copyBtn">Copy</button></div>
+  </div>
+  <div id="resList"></div>
+  <button class="restart" id="restartBtn">↩︎ Neu starten</button>
+</div>
+
+</div>
+<div class="toast" id="toast">Kopiert ✅</div>
+
+<script>
+const PLAYERS = ["Marvin","Yomz","Meron","Sam","Leo","Matteo","Ryan","Cem"];
+const CATS = [
+ {g:"🏀",n:"Beste Shooter (Catch & Shoot)",s:"Wer trifft den offenen Dreier?"} ,
+ {g:"🎯",n:"Beste Off-Dribble Shooter (Pull-up)",s:"Wurf aus der Bewegung"},
+ {g:"🔥",n:"Iso-Scorer (1 gegen 1)",s:"Wer kriegt seinen Wurf immer?"},
+ {g:"🍿",n:"Pick & Roll Ballhandler",s:"Wer führt den P&R aus?"},
+ {g:"🤸",n:"P&R Roller / Finisher (Dive-Man)",s:"Wer rollt zum Korb?"},
+ {g:"🏋️",n:"Post-Scorer (Low Block)",s:"Rücken zum Korb"},
+ {g:"🚀",n:"Slasher (Angriff auf den Korb)",s:"Wer geht hart rein?"},
+ {g:"✂️",n:"Cutters (Backdoor)",s:"Wer findet die Lücken?"},
+ {g:"💨",n:"Fast Break Sprinter",s:"Wer sprintet das Wing runter?"},
+ {g:"🏃",n:"Transition Ballhandler",s:"Wer bringt den Ball hoch?"},
+ {g:"🎮",n:"Primärer Ballhandler / PG",s:"Die Eins"},
+ {g:"🧠",n:"Secondary Playmaker",s:"Ersteller Nr. 2"},
+ {g:"🧱",n:"Off-Ball Screener",s:"Pin-Downs & Blocks stellen"},
+ {g:"🤝",n:"Handoff-/DHO-Spieler",s:"Dribble Handoffs"},
+ {g:"🔌",n:"Connector / Short-Roll",s:"4-gegen-3-Entscheider"},
+ {g:"🛡️",n:"Beste Perimeter Defender",s:"On-Ball Verteidigung"},
+ {g:"🧱",n:"Beste Post Defender",s:"Verteidigung am Block"},
+ {g:"🏯",n:"Beste Help/Weakside Defender",s:"Rim Protection"},
+ {g:"🚪",n:"Screen-Navigation",s:"Über/unter Screens"},
+ {g:"🤕",n:"Charger / Charge-Taker",s:"Charges ziehen"},
+ {g:"📣",n:"Defensive Anchor / Dirigent",s:"Kommunikation & Anführung D"},
+ {g:"🔀",n:"Defensive Wildcard (Switch 1–5)",s:"Kann alles verteidigen"},
+ {g:"🧨",n:"Offensiv-Rebounder",s:"Second-Chance-Punkte"},
+ {g:"🧹",n:"Defensiv-Rebounder",s:"Der Korb wird geputzt"},
+ {g:"📦",n:"Box-Out-Spezialist",s:"Ausblocken"},
+ {g:"🦘",n:"Athletischster Spieler",s:"Sprungkraft & Speed"},
+ {g:"🔋",n:"Best Conditioning",s:"48 Minuten sprinten"},
+ {g:"⚡",n:"Energy Guy / X-Factor",s:"Spark von der Bank"},
+ {g:"❤️‍🔥",n:"Emotionaler Leader",s:"Motivator"},
+ {g:"💥",n:"Foul-Drawer (And-One)",s:"Wer holt das And-One?"},
+ {g:"🧊",n:"Clutch FT-Schütze",s:"Wen schickt ihr an die Linie?"},
+ {g:"😅",n:"Hack-a-Shaq-Opfer",s:"Schlechtester FT-Schütze"},
+ {g:"📐",n:"Corner-3-Spezialist",s:"Ecken-Scharfschütze"},
+ {g:"⏰",n:"Late-Clock Schütze",s:"Buzzer-Beater-Kandidat"},
+ {g:"🤝",n:"Foul-to-Give",s:"Wer legt das letzte Foul?"},
+ {g:"🪑",n:"6th Man",s:"Erster von der Bank"},
+ {g:"🔒",n:"Matchup-Spezialist",s:"Shutdown gegen deren Star"}
+];
+
+let votes = {};   // catIndex -> [5 names or "?"]
+let idx = 0, skipped = new Set();
+const $ = id => document.getElementById(id);
+
+function buildCard(i){
+  const c = CATS[i];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.i = i;
+  let picks = '';
+  for(let p=0;p<5;p++){
+    const cur = (votes[i]&&votes[i][p]) || '';
+    picks += `<div class="pick"><label class="p${p+1}">#${p+1}</label><select data-i="${i}" data-p="${p}">
+      <option value="">— Platz ${p+1} —</option>
+      ${PLAYERS.map(n=>`<option ${cur===n?'selected':''}>${n}</option>`).join('')}
+      <option value="?" ${cur==='?'?'selected':''}>❓ Fragezeichen</option>
+    </select></div>`;
+  }
+  card.innerHTML = `<div class="emoji">${c.g}</div><h2>${c.n}</h2><div class="sub">${c.s}</div>
+    <div class="picks">${picks}</div><div class="hint">Du kannst auch weniger als 5 ausfüllen oder kippen ⏭️</div>`;
+  return card;
+}
+
+function render(){
+  const stack = $('cardStack'); stack.innerHTML='';
+  if(idx < CATS.length){
+    if(idx+1 < CATS.length) { const b = buildCard(idx+1); b.classList.add('behind'); stack.appendChild(b); }
+    stack.appendChild(buildCard(idx));
+  }
+  $('progFill').style.width = (idx/CATS.length*100)+'%';
+  $('counter').textContent = `${idx} / ${CATS.length}` + (skipped.size?` · ${skipped.size} gekippt`:'');
+}
+
+function collectCard(){
+  const sels = document.querySelectorAll(`select[data-i="${idx}"]`);
+  const arr = [...sels].map(s=>s.value);
+  if(arr.some(v=>v)) votes[idx]=arr; else delete votes[idx];
+}
+
+function next(dir){
+  if(dir===1) collectCard();
+  else skipped.add(idx);
+  const card = $('cardStack').querySelector('.card:not(.behind)');
+  if(card){ card.classList.add(dir===1?'gone-right':'gone-left'); }
+  setTimeout(()=>{ idx++; render(); },300);
+}
+
+document.addEventListener('change',e=>{
+  if(e.target.tagName==='SELECT'){
+    const i=+e.target.dataset.i, p=+e.target.dataset.p;
+    votes[i]=votes[i]||['','','','',''];
+    votes[i][p]=e.target.value;
+    if(!votes[i].some(v=>v)) delete votes[i];
+  }
+});
+$('nextBtn').onclick=()=>next(1);
+$('skipBtn').onclick=()=>next(-1);
+$('restartBtn').onclick=()=>{ votes={};skipped.clear();idx=0;$('result').style.display='none';$('cardStack').style.display='';document.querySelector('.btnrow').style.display='';render();};
+
+function finish(){
+  $('cardStack').style.display='none';
+  document.querySelector('.btnrow').style.display='none';
+  $('progFill').style.width='100%';
+  $('counter').textContent = `${CATS.length} / ${CATS.length} ✅`;
+  // build share link
+  const data = {n:$('voterName').value||'', v:votes};
+  const enc = btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  $('shareLink').value = location.origin+location.pathname+'#v='+enc;
+  // result list
+  let html='';
+  CATS.forEach((c,i)=>{
+    if(!votes[i]) return;
+    const vals = votes[i].map((v,p)=> v?`<span style="color:${p===0?'#ffd24a':'#c6ccdb'}">${p+1}. ${v==='?'?'❓':v}</span>`:'').filter(Boolean).join(' · ');
+    html += `<div class="rescard"><div class="cat">${c.g} ${c.n}</div><div class="val">${vals}</div></div>`;
+  });
+  if(!html) html = '<div class="rescard"><div class="val">Alles gekippt 😅</div></div>';
+  $('resList').innerHTML = html;
+  $('result').style.display='block';
+  window.scrollTo(0,0);
+}
+// intercept last next
+const _next = next;
+next = function(dir){
+  if(idx >= CATS.length-1 && dir===1){ collectCard(); const card=$('cardStack').querySelector('.card:not(.behind)'); if(card)card.classList.add('gone-right'); setTimeout(finish,300); return; }
+  _next(dir);
+};
+$('voterName').addEventListener('input',()=>{ /* refresh link */ });
+$('copyBtn').onclick=()=>{ $('shareLink').select(); navigator.clipboard.writeText($('shareLink').value).then(()=>{ $('toast').classList.add('show'); setTimeout(()=>$('toast').classList.remove('show'),1500); }).catch(()=>{document.execCommand('copy');}); };
+
+// ==== VIEW SHARED VOTES (#v=...) ====
+if(location.hash.startsWith('#v=')){
+  try{
+    const json = decodeURIComponent(escape(atob(location.hash.slice(3).replace(/-/g,'+').replace(/_/g,'/'))));
+    const d = JSON.parse(json);
+    $('subtitle').textContent = d.n ? `Votes von ${d.n}` : 'Geteilte Votes';
+    const stack = $('cardStack'); stack.style.display='none';
+    document.querySelector('.btnrow').style.display='none';
+    $('counter').textContent = `${Object.keys(d.v||{}).length} Kategorien beantwortet`;
+    $('progFill').style.width='100%';
+    let html='';
+    CATS.forEach((c,i)=>{
+      const vv = d.v[i]; if(!vv) return;
+      const vals = vv.map((v,p)=> v?`<span style="color:${p===0?'#ffd24a':'#c6ccdb'}">${p+1}. ${v==='?'?'❓':v}</span>`:'').filter(Boolean).join(' · ');
+      html += `<div class="rescard"><div class="cat">${c.g} ${c.n}</div><div class="val">${vals}</div></div>`;
+    });
+    $('resList').innerHTML = html||'<div class="rescard"><div class="val">Keine Votes</div></div>';
+    $('result').style.display='block';
+    document.querySelector('.sharebox').style.display='none';
+    document.querySelector('#nameWrap').style.display='none';
+    document.querySelector('#restartBtn').textContent='🏀 Selbst abstimmen';
+  }catch(e){ console.warn(e); }
+}
+
+render();
+</script>
+</body>
+</html>
