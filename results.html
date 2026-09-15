@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏀 Predictions — Top Liste</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,'SF Pro Display','Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(160deg,#0a0e17,#131a2a 60%,#1a2332); color:#e8eaf0; padding:24px 16px 60px; }
+  .wrap { max-width:760px; margin:0 auto; }
+  header { text-align:center; padding:20px 0 6px; }
+  h1 { font-size:clamp(24px,5vw,36px); font-weight:900; text-transform:uppercase; letter-spacing:-1px;
+    background:linear-gradient(90deg,#f5a623,#ffd24a,#f5a623); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  header p { color:#8b93a7; font-size:13px; margin-top:6px; }
+  .card { background:#131b2a; border:1px solid #232e45; border-radius:16px; padding:18px; margin:14px 0; }
+  .card h2 { font-size:15px; font-weight:800; margin-bottom:10px; color:#f5a623; }
+  textarea { width:100%; min-height:110px; background:#0f1626; color:#e8eaf0; border:1px solid #2a3550;
+    border-radius:12px; padding:12px; font-size:13px; font-family:ui-monospace,monospace; resize:vertical; }
+  textarea:focus { outline:none; border-color:#f5a623; }
+  .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .btn { border:none; border-radius:12px; font-weight:800; font-size:14px; cursor:pointer; padding:12px 18px; font-family:inherit; }
+  .btn.primary { background:linear-gradient(90deg,#f5a623,#ffd24a); color:#131a2a; }
+  .btn.ghost { background:#1c2739; color:#8b93a7; border:1px solid #2a3550; }
+  .btn:active { transform:scale(.97); }
+  .info { color:#8b93a7; font-size:12px; line-height:1.6; }
+  .voterlist { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .voter { background:#1c2739; border:1px solid #2a3550; border-radius:99px; padding:4px 12px; font-size:12px; font-weight:700; }
+  .voter button { background:none; border:none; color:#ff7b7b; cursor:pointer; font-weight:900; margin-left:6px; font-family:inherit; }
+  .cat { background:#161f30; border:1px solid #26324a; border-radius:12px; padding:10px 14px; margin:7px 0; }
+  .cat .name { font-size:12px; color:#8b93a7; }
+  .cat .row { display:grid; grid-template-columns:26px 1fr auto; gap:10px; align-items:center; margin-top:4px; }
+  .cat .rk { font-weight:900; color:#5a637a; font-size:13px; }
+  .cat .row.top .rk { color:#f5a623; }
+  .cat .nm { font-weight:800; font-size:15px; }
+  .cat .row.top .nm { color:#ffd24a; }
+  .cat .pts { color:#f5a623; font-weight:800; font-size:13px; }
+  .empty { text-align:center; color:#5a637a; padding:30px 0; font-size:14px; }
+  .bar { height:6px; background:#0f1626; border-radius:99px; overflow:hidden; margin-top:3px; max-width:340px; }
+  .bar > div { height:100%; background:linear-gradient(90deg,#f5a623,#ffd24a); border-radius:99px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🏆 Top Liste</h1>
+  <p>Anonyme Aggregation aller Votes · Punkte: #1=5 · #2=4 · #3=3 · #4=2 · #5=1</p>
+</header>
+
+<div class="card">
+  <h2>📥 Votes hinzufügen</h2>
+  <p class="info">Vote-Links einfügen (eine pro Zeile — die Links, die dir die Jungs schicken).<br>
+  Alles bleibt anonym: Namen werden nur lokal bei dir gespeichert, in der Liste & im Export nicht gezeigt.</p>
+  <textarea id="pasteBox" placeholder="https://marvinmouroum.github.io/basketball-predictions/#v=eyJ...
+https://marvinmouroum.github.io/basketball-predictions/#v=eyJ..."></textarea>
+  <div class="btnrow">
+    <button class="btn primary" id="addBtn">➕ Hinzufügen</button>
+    <button class="btn ghost" id="exportBtn">📄 TXT Export</button>
+    <button class="btn ghost" id="clearBtn">🗑️ Alles löschen</button>
+  </div>
+  <div class="voterlist" id="voterList"></div>
+</div>
+
+<div class="card">
+  <h2>🏀 Die Top Liste</h2>
+  <div id="list"></div>
+</div>
+</div>
+
+<script>
+const CATS = [
+ {g:"🏀",n:"Beste Shooter (Catch & Shoot)"},{g:"🎯",n:"Beste Off-Dribble Shooter (Pull-up)"},
+ {g:"🔥",n:"Iso-Scorer (1 gegen 1)"},{g:"🍿",n:"Pick & Roll Ballhandler"},
+ {g:"🤸",n:"P&R Roller / Finisher (Dive-Man)"},{g:"🏋️",n:"Post-Scorer (Low Block)"},
+ {g:"🚀",n:"Slasher"},{g:"✂️",n:"Cutters (Backdoor)"},{g:"💨",n:"Fast Break Sprinter"},
+ {g:"🏃",n:"Transition Ballhandler"},{g:"🎮",n:"Primärer Ballhandler / PG"},
+ {g:"🧠",n:"Secondary Playmaker"},{g:"🧱",n:"Off-Ball Screener"},{g:"🤝",n:"Handoff-/DHO-Spieler"},
+ {g:"🔌",n:"Connector / Short-Roll"},{g:"🛡️",n:"Beste Perimeter Defender"},
+ {g:"🧱",n:"Beste Post Defender"},{g:"🏯",n:"Beste Help/Weakside Defender"},
+ {g:"🚪",n:"Screen-Navigation"},{g:"🤕",n:"Charger / Charge-Taker"},
+ {g:"📣",n:"Defensive Anchor / Dirigent"},{g:"🔀",n:"Defensive Wildcard (Switch 1–5)"},
+ {g:"🧨",n:"Offensiv-Rebounder"},{g:"🧹",n:"Defensiv-Rebounder"},{g:"📦",n:"Box-Out-Spezialist"},
+ {g:"🦘",n:"Athletischster Spieler"},{g:"🔋",n:"Best Conditioning"},{g:"⚡",n:"Energy Guy / X-Factor"},
+ {g:"❤️‍🔥",n:"Emotionaler Leader"},{g:"💥",n:"Foul-Drawer (And-One)"},{g:"🧊",n:"Clutch FT-Schütze"},
+ {g:"😅",n:"Hack-a-Shaq-Opfer"},{g:"📐",n:"Corner-3-Spezialist"},{g:"⏰",n:"Late-Clock Schütze"},
+ {g:"🤝",n:"Foul-to-Give"},{g:"🪑",n:"6th Man"},{g:"🔒",n:"Matchup-Spezialist"}
+];
+const PTS = [5,4,3,2,1];
+const LS = 'bb_votes_v1';
+const $ = id=>document.getElementById(id);
+
+function load(){ try{ return JSON.parse(localStorage.getItem(LS)||'[]'); }catch(e){ return []; } }
+function save(v){ localStorage.setItem(LS, JSON.stringify(v)); }
+
+function parseLink(url){
+  const m = url.match(/#v=([A-Za-z0-9\-_]+)/);
+  if(!m) return null;
+  try{
+    const json = decodeURIComponent(escape(atob(m[1].replace(/-/g,'+').replace(/_/g,'/'))));
+    const d = JSON.parse(json);
+    return { name: d.n||'Anonym', v: d.v||{}, raw: m[1] };
+  }catch(e){ return null; }
+}
+
+$('addBtn').onclick = ()=>{
+  const lines = $('pasteBox').value.split(/\s+/).filter(l=>l.includes('#v='));
+  const cur = load();
+  let ok=0, dup=0, bad=0;
+  lines.forEach(l=>{
+    const p = parseLink(l.trim());
+    if(!p){ bad++; return; }
+    if(cur.some(c=>c.raw===p.raw)){ dup++; return; }
+    cur.push(p); ok++;
+  });
+  save(cur); $('pasteBox').value='';
+  render();
+  alert(`${ok} hinzugefügt${dup?`, ${dup} Duplikat(e) ignoriert`:''}${bad?`, ${bad} ungültig`:''}`);
+};
+
+$('clearBtn').onclick = ()=>{ if(confirm('Wirklich alle Votes löschen?')){ save([]); render(); } };
+
+$('exportBtn').onclick = ()=>{
+  const votes = load();
+  let t = `🏀 TEAM PREDICTIONS — TOP LISTE\n`;
+  t += `Abgestimmt: ${votes.length} (anonym) · Punkte: #1=5 #2=4 #3=3 #4=2 #5=1\n`;
+  t += `Stand: ${new Date().toLocaleString('de-DE')}\n${'='.repeat(46)}\n\n`;
+  CATS.forEach((c,ci)=>{
+    const agg = aggregate(votes, ci);
+    if(!agg.length) return;
+    t += `${c.g} ${c.n.toUpperCase()}\n`;
+    agg.slice(0,5).forEach((r,i)=> t += `  ${i+1}. ${r.name==='?'?'❓':r.name} (${r.pts} Pkt, ${r.votes} Votes)\n`);
+    t += `\n`;
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+  a.download = 'team-predictions.txt'; a.click();
+};
+
+function aggregate(votes, ci){
+  const agg = {};
+  votes.forEach(vr=>{
+    const arr = vr.v[ci]; if(!arr) return;
+    arr.forEach((n,p)=>{ if(!n) return; agg[n]=agg[n]||{pts:0,votes:0}; agg[n].pts+=PTS[p]||0; agg[n].votes++; });
+  });
+  return Object.entries(agg).map(([name,r])=>({name,...r})).sort((a,b)=>b.pts-a.pts||b.votes-a.votes);
+}
+
+function render(){
+  const votes = load();
+  // voter chips
+  $('voterList').innerHTML = votes.map((v,i)=>
+    `<span class="voter">${v.name}<button onclick="rm(${i})" title="entfernen">✕</button></span>`).join('') ||
+    '<span class="info">Noch keine Votes.</span>';
+  // list
+  if(!votes.length){ $('list').innerHTML='<div class="empty">Noch keine Votes — füge oben Vote-Links ein 📥</div>'; return; }
+  let html='';
+  CATS.forEach((c,ci)=>{
+    const agg = aggregate(votes,ci);
+    if(!agg.length) return;
+    const max = agg[0].pts;
+    html += `<div class="cat"><div class="name">${c.g} ${c.n}</div>`;
+    agg.slice(0,5).forEach((r,i)=>{
+      html += `<div class="row${i===0?' top':''}"><div class="rk">${i+1}</div>
+        <div><div class="nm">${r.name==='?'?'❓':r.name}</div>
+        <div class="bar"><div style="width:${Math.round(r.pts/max*100)}%"></div></div></div>
+        <div class="pts">${r.pts}</div></div>`;
+    });
+    html += `</div>`;
+  });
+  $('list').innerHTML = html || '<div class="empty">Keine Daten in den Votes.</div>';
+}
+function rm(i){ const v=load(); v.splice(i,1); save(v); render(); }
+window.rm = rm;
+
+render();
+</script>
+</body>
+</html>
