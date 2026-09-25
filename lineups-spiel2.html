@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏀 Spiel 2 — Lineups & Matchup-Plan</title>
+<style>
+  :root{--bg:#0d1117;--card:#161b22;--line:#30363d;--gold:#e3b341;--green:#3fb950;--blue:#58a6ff;--red:#f85149;--txt:#c9d1d9;--dim:#8b949e}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;max-width:900px;margin:0 auto}
+  h1{text-align:center;color:var(--gold);margin-bottom:4px;font-size:1.6em}
+  .sub{text-align:center;color:var(--dim);margin-bottom:24px;font-size:.9em}
+  h2{color:#fff;margin:28px 0 12px;font-size:1.15em;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .lu{display:flex;gap:8px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+  .lu .tag{flex:100%;font-weight:700;color:#fff;font-size:.95em}
+  .p{flex:1;min-width:86px;text-align:center;background:#1c2333;border:1px solid var(--line);border-radius:10px;padding:10px 4px}
+  .p .pos{font-size:.7em;color:var(--gold);font-weight:700;letter-spacing:.5px}
+  .p .nm{font-weight:700;color:#fff;margin:3px 0;font-size:.9em}
+  .p .gr{font-size:.72em;color:var(--dim)}
+  .note{flex:100%;font-size:.8em;color:var(--dim);margin-top:2px}
+  .starter{border-color:var(--gold);box-shadow:0 0 8px rgba(227,179,65,.25)}
+  .tag .emo{margin-right:6px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:100%;margin-top:6px}
+  .chip{font-size:.72em;background:#21262d;border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--dim)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.85em;margin-bottom:12px}
+  th{background:#1c2333;color:var(--gold);padding:8px;text-align:left}
+  td{padding:8px;border-top:1px solid var(--line)}
+  .warn{background:#2d1b1b;border:1px solid var(--red);color:#ffb4ae;border-radius:12px;padding:12px;margin:14px 0;font-size:.9em}
+  .rule{background:#12261c;border:1px solid var(--green);border-radius:12px;padding:12px;margin:10px 0;font-size:.9em}
+  .rollgame{background:linear-gradient(135deg,#1a1533,#161b22);border:1px solid #a371f7}
+  footer{text-align:center;color:var(--dim);font-size:.75em;margin-top:30px}
+</style>
+</head>
+<body>
+<h1>🏀 Spiel 2 — Sonntag</h1>
+<p class="sub">vs. BBV Bricks · So 27.09.2026 · 14:40 · Pallasstraße 34 (oben) · 10 Spieler (Nur fehlt)</p>
+
+<h2>📏 Team & Körperdaten</h2>
+<table>
+<tr><th>Spieler</th><th>Pos</th><th>Größe</th><th>Build</th><th>Rolle</th></tr>
+<tr><td>Meron</td><td>C</td><td>~2,05</td><td>lange Arme, physisch</td><td>Anchor — ⚠️ einziger Big, Fouls sparen!</td></tr>
+<tr><td>Sam</td><td>F</td><td>~1,92</td><td>~89 kg</td><td>Starter, Shutdown/Matchup #1</td></tr>
+<tr><td>Marvin</td><td>F</td><td>~1,91</td><td>~89 kg</td><td>Main-Scorer, Defensive Anchor #1</td></tr>
+<tr><td>Yomz</td><td>F</td><td>~1,90</td><td>sehr athletisch</td><td>Slasher-Finisher von der Bank</td></tr>
+<tr><td>Leo</td><td>G/F</td><td>~1,86</td><td>~72 kg, sehr leicht</td><td>Clutch-Minuten, Momentum-Card</td></tr>
+<tr><td>Ryan</td><td>G</td><td>~1,86</td><td>athletisch</td><td>Shooter, Spacing</td></tr>
+<tr><td>Matteo</td><td>G</td><td>~1,85</td><td>muskulös, schnell</td><td>früh &amp; viel, Guard-Defense</td></tr>
+<tr><td>Lamin</td><td>G</td><td>~1,84</td><td>stabil, nicht wegzuschieben</td><td>PG, Ballhandler #1, Clutch-FTs</td></tr>
+<tr><td>Cem</td><td>G</td><td>~1,80</td><td>kompakt, stabil</td><td>Energie-Stints, Pseudo-Big</td></tr>
+<tr><td>Mario</td><td>G</td><td>~1,78</td><td>⚠️ Defense-Liability</td><td>Corner-3-Weapon, nur offensiv</td></tr>
+</table>
+
+<h2>🏀 Standard-Lineups</h2>
+<div class="lu starter"><div class="tag"><span class="emo">🏀</span>STARTING FIVE</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Ryan</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Sam</div><div class="gr">1,92</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Sam über Yomz (Training dabei, vielseitiger)</div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🎯</span>OFFENSE — Punkte nötig</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Ryan</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Yomz</div><div class="gr">1,90</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Marvin Main-Scorer vom Wing (Iso #1), Lamin P&amp;R-Handler #1, Ryan Spacing</div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🛡️</span>DEFENSE — Führung halten</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Ryan</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Leo</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Marvin Anchor #1 + Meron Rim Protection #1</div></div>
+
+<div class="lu"><div class="tag"><span class="emo">⚡</span>PACE — Fast Break</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Matteo</div><div class="gr">1,85</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Yomz</div><div class="gr">1,90</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Lamin+Marvin bringen den Ball, Yomz sprintet die Wings</div></div>
+
+<div class="lu"><div class="tag"><span class="emo">📐</span>GROSS &amp; PHYSISCH</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Leo</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Sam</div><div class="gr">1,92</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Drei Forwards — Schnittgröße ~1,92</div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🧊</span>CLUTCH — letzte 2 Minuten</div>
+<div class="p"><div class="pos">PG</div><div class="nm">Lamin</div><div class="gr">1,84</div></div>
+<div class="p"><div class="pos">SG</div><div class="nm">Marvin</div><div class="gr">1,91</div></div>
+<div class="p"><div class="pos">SF</div><div class="nm">Leo</div><div class="gr">1,86</div></div>
+<div class="p"><div class="pos">PF</div><div class="nm">Yomz</div><div class="gr">1,90</div></div>
+<div class="p"><div class="pos">C</div><div class="nm">Meron</div><div class="gr">2,05</div></div>
+<div class="note">Lamin Clutch-FT #1 · Leo Emotionaler Leader</div></div>
+
+<h2>🆚 Matchup-Plan nach Gegner</h2>
+<div class="lu"><div class="tag"><span class="emo">🧱</span>Gegner GROSS</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Matteo</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Sam</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Wall am Ring</span><span class="chip">Cem/Yomz für Physis</span><span class="chip">P&R: Bigs rausziehen</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">💨</span>Gegner SCHNELL — Regel: Matteo → Lamin → Cem</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Matteo</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Immer erst Matteo (Screen-Nav #1)</span><span class="chip">dann Lamin (stabil)</span><span class="chip">dann Cem (kompakt)</span><span class="chip">Kein Yomz+Sam+Meron gleichzeitig</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🎯</span>Gegner kann gut WERFEN</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Matteo</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">No-Middle</span><span class="chip">harte Closeouts</span><span class="chip">Der Star heiß → Sam rein (Shutdown #1)</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🔲</span>Gegner spielt 2-3-ZONE — Meron RAUS</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Mario</div></div><div class="p"><div class="nm">Sam</div></div>
+<div class="chips"><span class="chip">Small Ball: 5 Kreatoren</span><span class="chip">Corner-3s: Mario &amp; Ryan</span><span class="chip">High-Post: Marvin</span><span class="chip">Rebounds fehlen → Yomz für Mario</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🔲</span>Gegner spielt 3-2-ZONE</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Matteo</div></div><div class="p"><div class="nm">Yomz</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Flanken &amp; Baseline attackieren</span><span class="chip">Baseline-Runner: Yomz</span><span class="chip">Pull-up: Matteo</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">👤</span>Gegner spielt MANN-MANN</div>
+<div class="p"><div class="nm">🎲</div><div class="nm" style="color:#a371f7">ROLLGAME</div></div>
+<div class="chips"><span class="chip">Rollgame-Set: Marvin, Leo, Cem, Ryan, Mario, Sam</span><span class="chip">Alternativ P&R-Standard: Lamin Handler #1 + Yomz Roller #2</span><span class="chip">Marvin-Iso auf schwächstem Verteidiger</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🏃</span>Gegner stark in TRANSITION</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Matteo</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Sam</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Def.-Rebounds &gt; eigener Fast Break</span><span class="chip">2 Guards immer zurück</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">🔥</span>Gegner ist HEISS — Lauf stoppen</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Leo</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Timeout nutzen</span><span class="chip">NICHT pressen</span><span class="chip">Marvin Foul-to-Give #1</span><span class="chip">Cem rein (Charger, bricht Rhythmus)</span></div></div>
+
+<div class="lu"><div class="tag"><span class="emo">⚖️</span>Gegner zieht viele FOULS</div>
+<div class="p"><div class="nm">Lamin</div></div><div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Yomz</div></div><div class="p"><div class="nm">Meron</div></div>
+<div class="chips"><span class="chip">Hände hoch, vertikal</span><span class="chip">Endphase: Ball zu Lamin (FT #1)</span></div></div>
+
+<h2>🎲 Rollgame (Do trainiert)</h2>
+<div class="lu rollgame"><div class="tag" style="color:#a371f7"><span class="emo">🎲</span>ROLLGAME-SET — nur gegen Mann-Mann</div>
+<div class="p"><div class="nm">Marvin</div></div><div class="p"><div class="nm">Leo</div></div><div class="p"><div class="nm">Cem</div></div><div class="p"><div class="nm">Ryan</div></div><div class="p"><div class="nm">Mario</div></div><div class="p"><div class="nm">Sam</div></div>
+<div class="note">6er-Paket (einstudiert 24.09.) — als fester Block einsetzen, z.B. 3-Minuten-Phase</div></div>
+
+<h2>🔋 Cem-Plan</h2>
+<div class="rule">🔋 <b>Cem:</b> fester 3-4-Min-Energie-Stint pro Halbzeit · Gegner heiß → rein (Charger #2) · Rollgame eh drin · Pseudo-Big gegen große Gegner · Backup-Ballhandler in Transition</div>
+
+<h2>⚠️ Merkregeln</h2>
+<div class="warn">⚠️ <b>Meron = einziger Big</b> — Fouls sparen! Notfall: 2-3-Zone.</div>
+<div class="rule">✅ Leo = Momentum-Card · Matteo früh &amp; viel · Mario nur offensiv (Defense-Liability) · Rollgame nur gegen Mann-Mann</div>
+
+<footer>Erstellt 25.09.2026 · basiert auf Team-Voting (37 Kategorien) + Marvins Positionen/Körperdaten · basketball/README.md</footer>
+</body>
+</html>
